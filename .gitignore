@@ -1,0 +1,25 @@
+# Environment variables (sensitive)
+.env
+
+# Authentication files (sensitive)
+# Ignore everything in auth/ except .gitignore
+auth/*
+!auth/.gitignore
+
+# Registry data (large files)
+# Ignore everything in data/ except .gitignore
+data/*
+!data/.gitignore
+
+# SSL Certificates (sensitive)
+# Ignore everything in ssl/ except .gitignore
+ssl/*
+!ssl/.gitignore
+
+# IDE and OS files
+.DS_Store
+.vscode/
+.idea/
+*.swp
+*.swo
+*~

@@ -1,0 +1,42 @@
+services:
+  registry:
+    image: registry:2
+    container_name: docker-registry
+    restart: always
+    environment:
+      REGISTRY_STORAGE_FILESYSTEM_ROOTDIRECTORY: /var/lib/registry
+      REGISTRY_HTTP_ADDR: 0.0.0.0:5000
+      REGISTRY_HTTP_TLS_CERTIFICATE: /certs/registry.crt
+      REGISTRY_HTTP_TLS_KEY: /certs/registry.key
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: Registry Realm
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./data:/var/lib/registry
+      - ./config.yml:/etc/docker/registry/config.yml:ro
+      - ./ssl:/certs:ro
+      - ./auth:/auth:ro
+    networks:
+      - registry-network
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+        reservations:
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "10"
+    healthcheck:
+      test: [ "CMD", "nc", "-z", "localhost", "5000" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  registry-network:
+    driver: bridge
