@@ -83,12 +83,14 @@ else
     read -p "Email Address [admin@${REGISTRY_DOMAIN}]: " EMAIL
     EMAIL=${EMAIL:-admin@${REGISTRY_DOMAIN}}
     
-    # Generate SSL certificate
+    # Generate SSL certificate (includes SAN, required since Go's TLS
+    # stack rejects certs that rely on the legacy CN-only field)
     openssl req -newkey rsa:4096 -nodes -sha256 \
         -keyout "$SSL_KEY" \
         -x509 -days 365 \
         -out "$SSL_CERT" \
-        -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORG/OU=$OU/CN=$REGISTRY_DOMAIN/emailAddress=$EMAIL"
+        -subj "/C=$COUNTRY/ST=$STATE/L=$CITY/O=$ORG/OU=$OU/CN=$REGISTRY_DOMAIN/emailAddress=$EMAIL" \
+        -addext "subjectAltName=DNS:$REGISTRY_DOMAIN"
     
     info "SSL certificate generated successfully"
 fi
