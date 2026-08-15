@@ -7,9 +7,7 @@ auth/*
 !auth/.gitignore
 
 # Registry data (large files)
-# Ignore everything in data/ except .gitignore
-data/*
-!data/.gitignore
+data
 
 # SSL Certificates (sensitive)
 # Ignore everything in ssl/ except .gitignore
